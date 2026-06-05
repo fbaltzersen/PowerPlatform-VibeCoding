@@ -42,13 +42,58 @@ If unsure, recommend Canvas App first and explain why a Code App or PCF might be
 
 ## Universal Rules (all component types)
 
+### Continuous documentation — mandatory, non-negotiable
+
+> This is the most critical documentation rule. It applies without exception on every project,
+> every session, every change. The AI must maintain the project's DEVLOG.md automatically.
+> The consultant must never need to ask for documentation to be written.
+
+**Before reporting any work as done, Claude must:**
+
+1. **Update `DEVLOG.md`** with an entry covering what changed, why, alternatives considered,
+   files modified, trade-offs, and follow-up items. See the entry format in
+   `documentation/dev-log-standard.md`.
+
+2. **Create `DEVLOG.md`** if it does not exist yet, using the template at
+   `documentation/templates/devlog-template.md`.
+
+3. **Create or update an ADR** (`/documentation/decisions/ADR-XXX-title.md`) whenever the
+   change involves an architectural decision (data source, component type, API pattern, etc.).
+
+4. **Update `README.md`** whenever the change affects connectors, environment variables,
+   deployment steps, or anything visible to a new developer inheriting the project.
+
+**DEVLOG entry format (minimum required fields):**
+
+```
+## [YYYY-MM-DD] — [Short imperative title]
+
+**Requirement:** [Paraphrase of the user's prompt — what was asked for]
+**Implemented:** [What was built — name files, screens, formulas specifically]
+**Reasoning:** [Why this approach — reference framework rules and/or MS Learn URLs]
+**Alternatives considered:** [Table of alternatives and why rejected, if applicable]
+**Files changed:** [List of modified files with one-line descriptions]
+**Trade-offs / limitations:** [Known constraints or performance implications]
+**Follow-up:** [Deferred items, or "None."]
+**ADR:** [ADR-XXX or N/A]
+```
+
+**Documentation quality bar:** A consultant who was not in the session must be able to read
+the DEVLOG and understand exactly what changed, why, and what to be careful about.
+If an entry cannot meet this bar, the reasoning was not clear enough and needs to be
+revisited before the work is considered done.
+
+Full specification: `documentation/dev-log-standard.md`
+
+---
+
 ### Solutions and ALM
 - Always use a named Solution — never the default solution
 - Always use Environment Variables for environment-specific values
 - Always use Connection References — never hardcoded connections
 - Run Solution Checker before every delivery (Canvas Apps)
 
-### Documentation
+### Code documentation
 - Every screen / component / app must have a purpose statement in the README
 - Complex logic must have a comment explaining **why**, not what
 - Follow the dual-layer standard: consultant summary + technical specification
@@ -61,7 +106,7 @@ If unsure, recommend Canvas App first and explain why a Code App or PCF might be
 
 ### Microsoft documentation
 When in doubt, fetch the authoritative Microsoft source rather than guessing.
-Master index: see `../documentation/standards.md` or the framework README.
+Master index: see `documentation/standards.md` or the framework README.
 
 ---
 

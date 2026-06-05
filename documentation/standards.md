@@ -149,6 +149,48 @@ Format a limitations section like this:
 
 Do not hide limitations. A customer who discovers an undocumented limitation during go-live loses trust.
 
+### 9. Continuous development log (DEVLOG.md) — AI-maintained
+
+> **For consultants:** This is the most important documentation rule in the framework.
+> Every change the AI makes — every screen added, every formula changed, every architectural
+> decision — is automatically recorded in `DEVLOG.md` at the project root. You do not write
+> this yourself. The AI writes it for you. The result is a complete, readable history of why
+> the project is the way it is.
+
+Every project must have a `DEVLOG.md` at its root.
+
+**AI obligation:** Claude must update `DEVLOG.md` after every meaningful change, before
+reporting the work as done. This is not optional and is never deferred to "later".
+
+See the full specification: [`documentation/dev-log-standard.md`](./dev-log-standard.md)
+
+Template: [`documentation/templates/devlog-template.md`](./templates/devlog-template.md)
+
+**Minimum content per DEVLOG entry:**
+
+| Field | Required | Content |
+|-------|----------|---------|
+| Date | Yes | ISO date YYYY-MM-DD |
+| Title | Yes | Short imperative description of what changed |
+| Requirement | Yes | Paraphrase of the user's prompt — why was this done? |
+| Implemented | Yes | Specific description — name files, screens, formulas |
+| Reasoning | Yes | Why this approach — reference framework rules and/or Microsoft Learn URLs |
+| Alternatives considered | When applicable | What was evaluated and why it was rejected |
+| Files changed | Yes | List of modified files with one-line descriptions |
+| Trade-offs / limitations | Yes | Platform constraints, performance implications, known gaps |
+| Follow-up | Yes | Deferred items or "None." |
+| ADR reference | When applicable | Link to ADR if an architectural decision was recorded |
+
+**When a DEVLOG entry is required:**
+- New screen, component, control, or route added
+- Existing feature modified
+- Data access pattern changed (query, connector, API call)
+- Bug fixed — include root cause and fix
+- Architectural or design decision made
+- Configuration changed (environment variable, connector)
+
+**When not required:** documentation-only changes with no behavioral impact.
+
 ### 8. Dual-layer standard
 
 All project documentation written for this framework follows the dual-layer format:
