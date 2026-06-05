@@ -66,10 +66,10 @@ Supporting documents (fetch when needed):
 | `/simplify` | When code has grown; after completing a feature |
 | `/deep-research` | When best-practice guidance is needed on an unfamiliar topic |
 | `/verify` | After implementing a feature to confirm it works |
-| `/pp-new-code-app` | Start a new Code App project with full framework setup |
-| `/pp-new-canvas-app` | Start a new Canvas App project with full framework setup |
-| `/pp-new-pcf` | Start a new PCF project with full framework setup |
-| `/pp-checklist` | Run pre-delivery quality checklist |
+| `/ins-new-code-app` | Start a new Code App project with full framework setup |
+| `/ins-new-canvas-app` | Start a new Canvas App project with full framework setup |
+| `/ins-new-pcf` | Start a new PCF project with full framework setup |
+| `/ins-checklist` | Run pre-delivery quality checklist |
 
 ---
 

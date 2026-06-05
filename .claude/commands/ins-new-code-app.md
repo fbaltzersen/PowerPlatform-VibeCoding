@@ -1,4 +1,4 @@
-# /pp-new-code-app
+# /ins-new-code-app
 
 Sets up a new Power Platform Code App project with the full Inspirit365 quality framework.
 

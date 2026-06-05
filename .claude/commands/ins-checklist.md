@@ -1,4 +1,4 @@
-# /pp-checklist
+# /ins-checklist
 
 Runs the pre-delivery quality checklist for the current Power Platform project.
 

@@ -1,4 +1,4 @@
-# /pp-new-pcf
+# /ins-new-pcf
 
 Sets up a new Power Platform PCF Code Component project with the full Inspirit365 quality framework.
 

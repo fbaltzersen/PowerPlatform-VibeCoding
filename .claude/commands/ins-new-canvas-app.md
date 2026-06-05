@@ -1,4 +1,4 @@
-# /pp-new-canvas-app
+# /ins-new-canvas-app
 
 Sets up a new Power Platform Canvas App project with the full Inspirit365 quality framework.
 

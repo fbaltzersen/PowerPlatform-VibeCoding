@@ -49,6 +49,6 @@ foreach ($cmd in $commands) {
 Write-Host ""
 Write-Host "Start a new project:" -ForegroundColor Cyan
 Write-Host "  1. Create a project folder and open it in VS Code"
-Write-Host "  2. Open Claude Code and type /pp-new-code-app (or canvas-app / pcf)"
+Write-Host "  2. Open Claude Code and type /ins-new-code-app (or canvas-app / pcf)"
 Write-Host "  3. Claude will set up the framework and ask clarifying questions"
 Write-Host ""
