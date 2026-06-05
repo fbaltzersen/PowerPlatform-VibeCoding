@@ -86,6 +86,25 @@ Master index: see `../documentation/standards.md` or the framework README.
 - User says "it probably works" without testing → ask for verification
 - Any pattern that would break delegation in Canvas Apps → warn and propose the correct approach
 
+### Scalability red flags — push back on ALL of these before writing any code
+
+These patterns produce unscalable solutions that fail on real customer data volumes.
+Identify them in the user's request or in existing code and propose the correct alternative.
+
+| Anti-pattern | Why it fails | Correct alternative |
+|---|---|---|
+| "Fetch all [entity] records" | Tens of thousands of rows → memory crash, API rate limits | Add `$filter`, `$top`, `$select`; paginate |
+| Query without `$select` | Returns every column — burns API execution time quota fast | Always specify only the columns you render |
+| Client-side filtering after fetching all records | Full dataset in memory; delegation bypass | Move filter to `$filter` (server-side) |
+| No pagination / `$top` | Dataverse returns up to 5,000 rows by default | Use `@odata.nextLink` cursor pagination or `$top` |
+| API call in a loop per record | O(n) requests — 100 items = 100 API calls | Batch into a single request |
+| `updateView` calls webAPI without `updatedProperties` guard (PCF) | API call fires on every property change | Guard: `if (!context.updatedProperties.includes('x')) return` |
+| `notifyOutputChanged` on every keypress (PCF) | Floods the host app with recalculations | Debounce — minimum 300ms |
+| Direct `fetch()` to Azure Function with hardcoded URL/key | Not portable, not secure, not ALM-compatible | Use a connector or receive endpoint via input property |
+
+Reference: https://learn.microsoft.com/en-us/power-apps/developer/data-platform/api-limits
+Reference: https://learn.microsoft.com/power-apps/developer/data-platform/query-antipatterns
+
 ---
 
 ## References

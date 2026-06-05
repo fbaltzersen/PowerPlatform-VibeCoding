@@ -165,6 +165,44 @@ Always scope CSS to the component container. Never write global CSS rules.
 
 ---
 
+## API and WebAPI scalability rules
+
+See `api-scalability.md` for the full specification. The rules below are the mandatory minimum.
+
+Every `context.webAPI.retrieveMultipleRecords` call MUST include:
+- `$select` — only the columns rendered by this component
+- `$filter` — server-side filter; never fetch all records and filter in JavaScript
+- `$top` — always cap the result set (recommended ≤ 50 for UI lists)
+- `$orderby` — always include a unique column for deterministic pagination
+
+```typescript
+// ✗ WRONG — never do this
+const result = await context.webAPI.retrieveMultipleRecords('account');
+
+// ✓ CORRECT — always filter, select, cap, and order
+const result = await context.webAPI.retrieveMultipleRecords(
+  'account',
+  '?$select=name,emailaddress1&$filter=statecode eq 0&$top=50&$orderby=name asc,accountid asc'
+);
+```
+
+Scalability red flags — push back immediately when you see these requests:
+
+| Request | Problem | Correct approach |
+|---|---|---|
+| `retrieveMultipleRecords` without `$select` | Returns every column | Add `$select` with only needed columns |
+| `retrieveMultipleRecords` without `$filter` | Fetches entire table | Add server-side `$filter` |
+| `retrieveMultipleRecords` without `$top` | Up to 5,000 rows by default | Add `$top` ≤ 50 for UI lists |
+| API call in `updateView` without `updatedProperties` guard | Fires on every property change | Guard with `context.updatedProperties.includes(...)` |
+| `notifyOutputChanged` on every keystroke | Floods host app recalculations | Debounce — 300ms minimum |
+| `fetch()` in a loop per record | O(n) requests — hits rate limits | Batch into one request |
+
+Reference: `api-scalability.md`
+Reference: https://learn.microsoft.com/power-apps/developer/component-framework/code-components-best-practices#limit-size-and-frequency-of-calls-to-the-webapi
+Reference: https://learn.microsoft.com/en-us/power-apps/developer/data-platform/api-limits
+
+---
+
 ## Forbidden patterns
 
 - Direct DOM manipulation outside the component container element
@@ -175,6 +213,8 @@ Always scope CSS to the component container. Never write global CSS rules.
 - Synchronous network requests
 - More than one call to `ReactDOM.render` per `updateView` execution
 - Calling `notifyOutputChanged` on every keypress — debounce it
+- Calling `webAPI` inside `updateView` without an `updatedProperties` guard
+- Fetching all records without `$select`, `$filter`, and `$top`
 
 ---
 

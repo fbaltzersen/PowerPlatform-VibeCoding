@@ -90,6 +90,32 @@ STEP 7 — Revision
 
 ---
 
+## API and query scalability rules
+
+See `api-scalability.md` for the full specification. The rules below are the mandatory minimum.
+
+Every connector query against Dataverse MUST include:
+- `$select` — only columns rendered in the UI
+- `$filter` — server-side; never fetch all records and filter in React
+- `$top` or `maxpagesize` — always cap the result set
+- `$orderby` — always include a unique column (e.g. `accountid asc`) for deterministic pagination
+
+Scalability red flags — stop and propose a correct alternative when you see:
+
+| Request | Problem |
+|---|---|
+| `getAccounts()` with no parameters | Fetches every record in the environment |
+| Filter applied after `.then(data => data.filter(...))` | Client-side filter on a full dataset |
+| No `$top` or page size | Default can return up to 5,000 rows |
+| `$skip` for pagination | Dataverse does not support `$skip` — use `@odata.nextLink` |
+| API call in a loop per list item | O(n) requests — use batch endpoint instead |
+| Direct `fetch()` to Azure Function with hardcoded URL | Not portable, not secure |
+
+Reference: `api-scalability.md`
+Reference: https://learn.microsoft.com/en-us/power-apps/developer/data-platform/api-limits
+
+---
+
 ## React architecture rules
 
 **Fluent UI version:** Always use v9 (`@fluentui/react-components`) — not v8 (`@fluentui/react`)

@@ -139,14 +139,40 @@ Import the generated service into your own component or hook. Never import it in
 
 ```typescript
 // src/hooks/useAccounts.ts  — YOUR file, safe to edit
+//
+// SCALABILITY RULES — always apply:
+//   1. $select — only request the columns you actually display
+//   2. $filter — always filter server-side; never fetch all and filter client-side
+//   3. $top / maxpagesize — never load unbounded result sets
+//   4. $orderby — always include a unique column so paging is deterministic
+//
+// See code-apps/api-scalability.md for full patterns.
+
 import { useQuery } from '@tanstack/react-query';
 import { DataverseService } from '../Services/DataverseService';
 import type { Account } from '../Models/account';
 
-export function useAccounts() {
+interface AccountListOptions {
+  searchTerm?: string;
+  pageSize?: number;
+}
+
+export function useAccounts({ searchTerm, pageSize = 50 }: AccountListOptions = {}) {
   return useQuery<Account[], Error>({
-    queryKey: ['accounts'],
-    queryFn: () => DataverseService.getAccounts(),
+    queryKey: ['accounts', { searchTerm, pageSize }],
+    queryFn: () =>
+      DataverseService.getAccounts({
+        // Always $select — never return all columns
+        select: ['accountid', 'name', 'emailaddress1', 'telephone1'],
+        // Always $filter — never load all records
+        filter: searchTerm ? `startswith(name, '${searchTerm}')` : 'statecode eq 0',
+        // Always $top — never unbounded
+        top: pageSize,
+        // Always $orderby with a unique column for deterministic paging
+        orderby: 'name asc,accountid asc',
+      }),
+    // Keep previous data visible while next page loads
+    placeholderData: (prev) => prev,
   });
 }
 ```
@@ -157,7 +183,7 @@ import { Spinner, MessageBar, MessageBarBody } from '@fluentui/react-components'
 import { useAccounts } from '../../hooks/useAccounts';
 
 export function AccountList() {
-  const { data: accounts, isLoading, isError, error } = useAccounts();
+  const { data: accounts, isLoading, isError, error } = useAccounts({ pageSize: 50 });
 
   if (isLoading) return <Spinner label="Loading accounts..." />;
 
@@ -180,9 +206,20 @@ export function AccountList() {
 ```
 
 Key points:
-- Use React Query (`@tanstack/react-query`) for all connector calls — it handles caching, loading, and error states automatically
-- Always type the response (`Account[]`) — no `any`
+- Use React Query (`@tanstack/react-query`) for all connector calls — caching, loading, and error states
+- Always `$select` — returning unused columns wastes bandwidth and counts toward API limits
+- Always `$filter` server-side — **never** fetch all records and filter in the browser
+- Always `$top` or `maxpagesize` — unbounded queries can return up to 5,000 rows and hit service protection limits
+- Always `$orderby` including a unique column — required for deterministic pagination
+- Always type the response — no `any`
 - Always handle loading and error states in the UI
+
+> **Anti-pattern to avoid:** `DataverseService.getAccounts()` with no parameters returns every
+> active account in the environment. On a large tenant this can be tens of thousands of records,
+> hit Dataverse service protection limits, and crash the browser with memory pressure. Always
+> add `$select`, `$filter`, and `$top` before calling any list query.
+
+See `api-scalability.md` for full pagination, 429 retry, and Azure Function call patterns.
 
 ---
 
