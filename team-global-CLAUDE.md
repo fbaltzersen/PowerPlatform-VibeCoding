@@ -69,6 +69,9 @@ Supporting documents (fetch when needed):
 | `/ins-new-code-app` | Start a new Code App project with full framework setup |
 | `/ins-new-canvas-app` | Start a new Canvas App project with full framework setup |
 | `/ins-new-pcf` | Start a new PCF project with full framework setup |
+| `/ins-edit-code-app` | Edit an existing Code App — asks for environment, source, and scope |
+| `/ins-edit-canvas-app` | Edit an existing Canvas App — asks for environment, source, and scope |
+| `/ins-edit-pcf` | Edit an existing PCF component — asks for environment, source, and breaking change risk |
 | `/ins-checklist` | Run pre-delivery quality checklist |
 
 ---
